@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Que Traje-dia! by Máximo San Martín</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Overlay de Login -->
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-modal">
+            <h2>¡Bienvenido a Que Traje-dia!</h2>
+            <p>Completa tu perfil para comenzar</p>
+            <form id="profileForm" class="profile-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="height">Altura (cm):</label>
+                        <input type="number" id="height" min="150" max="210" placeholder="175" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="weight">Peso (kg):</label>
+                        <input type="number" id="weight" min="50" max="150" placeholder="70" required>
+                    </div>
+                </div>
+                
+                <!-- Size Recommendation Display -->
+                <div id="sizeRecommendation" class="size-recommendation" style="display: none;">
+                    <h4><i class="fas fa-ruler"></i> Tallas Recomendadas</h4>
+                    <div class="size-details">
+                        <div class="size-item">
+                            <span class="label">Talle general:</span>
+                            <span id="recommendedSize" class="value"></span>
+                        </div>
+                        <div class="size-item">
+                            <span class="label">BMI:</span>
+                            <span id="bmiInfo" class="value"></span>
+                        </div>
+                        <div id="sizeNote" class="size-note"></div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="shoeSize">Talla de Zapato:</label>
+                    <select id="shoeSize" required>
+                        <option value="">Seleccionar</option>
+                        <option value="38">38</option>
+                        <option value="39">39</option>
+                        <option value="40">40</option>
+                        <option value="41">41</option>
+                        <option value="42">42</option>
+                        <option value="43">43</option>
+                        <option value="44">44</option>
+                        <option value="45">45</option>
+                        <option value="46">46</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="eventType">Tipo de Evento:</label>
+                    <select id="eventType" required>
+                        <option value="">Seleccionar</option>
+                        <option value="formal">Formal (Bodas, Galas, Negocios)</option>
+                        <option value="casual">Casual (Fiestas, Cenas, Social)</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary">Comenzar a Personalizar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-left">
+                <img src="https://via.placeholder.com/200x70/4A5568/FFFFFF?text=Que+Traje-día" alt="Logo Que Traje-día" class="logo-left">
+            </div>
+            <div class="navbar-center">
+                <img src="https://via.placeholder.com/100x30/2D3748/FFFFFF?text=MSM" alt="Logo MSM" class="logo-center">
+            </div>
+            <div class="navbar-right">
+                <span id="userGreeting" class="user-greeting">¡Hola!</span>
+                <button id="logoutBtn" class="btn-secondary">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        <div class="floating-container">
+            <!-- Bloque Izquierdo - Visualizador del Outfit -->
+            <div class="outfit-visualizer-block">
+                <h3><i class="fas fa-eye"></i> Vista Previa del Outfit</h3>
+                <div class="outfit-preview" id="outfitPreview">
+                    <div class="mannequin">
+                        <img id="outfit-suit" class="layer suit-layer" src="" alt="Traje" style="display: none;">
+                        <img id="outfit-shirt" class="layer shirt-layer" src="" alt="Camisa" style="display: none;">
+                        <img id="outfit-vest" class="layer vest-layer" src="" alt="Chaleco" style="display: none;">
+                        <img id="outfit-tie" class="layer tie-layer" src="" alt="Corbata" style="display: none;">
+                        <img id="outfit-shoes" class="layer shoes-layer" src="" alt="Zapatos" style="display: none;">
+                        <div id="mannequin-placeholder" class="mannequin-placeholder">
+                            <i class="fas fa-user-tie"></i>
+                            <p>Selecciona prendas para ver tu outfit</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Resumen del Outfit -->
+                <div class="outfit-summary">
+                    <h4>Prendas Seleccionadas</h4>
+                    <div id="selectedItems" class="selected-items"></div>
+                    <div class="total-price">
+                        <strong>Total: $<span id="totalPrice">0</span></strong>
+                    </div>
+                </div>
+
+                <!-- Acciones -->
+                <div class="outfit-actions">
+                    <button id="clearOutfit" class="btn-secondary">
+                        <i class="fas fa-trash"></i> Limpiar
+                    </button>
+                    <button id="saveOutfit" class="btn-primary">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bloque Derecho - Selección de Prendas -->
+            <div class="clothing-selection-block">
+                <h3><i class="fas fa-tshirt"></i> Personaliza tu Outfit</h3>
+                
+                <!-- Sugerencias de Color -->
+                <div id="colorSuggestions" class="color-suggestions" style="display: none;">
+                    <h4><i class="fas fa-palette"></i> Sugerencias de Combinación</h4>
+                    <div id="suggestionContent" class="suggestion-content"></div>
+                </div>
+
+                <!-- Categorías de Ropa -->
+                <div class="clothing-categories">
+                    <!-- Trajes -->
+                    <div class="category-section">
+                        <h4 class="category-title">
+                            <i class="fas fa-user-tie"></i> Trajes y Sacos
+                        </h4>
+                        <div id="suitsGrid" class="clothing-grid"></div>
+                    </div>
+
+                    <!-- Camisas -->
+                    <div class="category-section">
+                        <h4 class="category-title">
+                            <i class="fas fa-shirt"></i> Camisas
+                        </h4>
+                        <div id="shirtsGrid" class="clothing-grid"></div>
+                    </div>
+
+                    <!-- Corbatas -->
+                    <div class="category-section">
+                        <h4 class="category-title">
+                            <i class="fas fa-necktie"></i> Corbatas y Moños
+                        </h4>
+                        <div id="tiesGrid" class="clothing-grid"></div>
+                    </div>
+
+                    <!-- Chalecos -->
+                    <div class="category-section">
+                        <h4 class="category-title">
+                            <i class="fas fa-vest"></i> Chalecos
+                        </h4>
+                        <div id="vestsGrid" class="clothing-grid"></div>
+                    </div>
+
+                    <!-- Zapatos -->
+                    <div class="category-section">
+                        <h4 class="category-title">
+                            <i class="fas fa-shoe-prints"></i> Zapatos
+                        </h4>
+                        <div id="shoesGrid" class="clothing-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulario de Solicitud -->
+        <div class="request-form-container" id="requestFormContainer" style="display: none;">
+            <div class="request-form">
+                <h3><i class="fas fa-paper-plane"></i> Solicitar Presupuesto</h3>
+                <form id="requestForm">
+                    <div class="form-group">
+                        <label for="eventDate">Fecha del Evento:</label>
+                        <input type="date" id="eventDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="comments">Comentarios Adicionales:</label>
+                        <textarea id="comments" rows="3" placeholder="Cualquier información adicional..."></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" id="cancelRequest" class="btn-secondary">Cancelar</button>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-envelope"></i> Enviar Solicitud
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- FAB para Solicitar -->
+    <button id="requestBtn" class="fab" data-testid="button-request" title="Solicitar Presupuesto">
+        <i class="fas fa-envelope"></i>
+    </button>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
